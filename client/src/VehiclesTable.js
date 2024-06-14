@@ -3,6 +3,7 @@ import axios from 'axios';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
 const VehiclesTable = () => {
+    
     const [vehicles, setVehicles] = useState([]);
     const [cities, setCities] = useState([]);
     const [drivers, setDrivers] = useState([]);
