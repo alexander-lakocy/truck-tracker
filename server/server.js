@@ -1,7 +1,7 @@
 require("dotenv").config({ path: __dirname + "/.env"});
 const express = require('express');
 const cors = require('cors');
-const pool = require(__dirname + "/db.config.js");
+const pool = require(__dirname + "/db/db.config.js");
 
 const app = express();
 // const routes = require('./routes');
@@ -15,7 +15,6 @@ app.use(cors());
 app.use(express.json());
 
 const getVehicles = async (req, res) => {
-    console.log('getVehicles()');
     try {
         const result = await pool.query(`
             SELECT v.id, v.driver_name, l.name AS current_city, l.latitude, l.longitude
@@ -32,10 +31,9 @@ const getVehicles = async (req, res) => {
 };
         
 const getCities = async (req, res) => {
-    console.log('getCities()');
     try {
         const result = await pool.query(`
-            SELECT name FROM locations
+            SELECT name FROM locations ORDER BY name
         `);
         res.status(200).json(result.rows);
     } catch (error) {
@@ -46,10 +44,9 @@ const getCities = async (req, res) => {
 };
 
 const getDrivers = async (req, res) => {
-    console.log('getDrivers()');
     try {
         const result = await pool.query(`
-            SELECT driver_name FROM vehicles ORDER BY id
+            SELECT driver_name FROM vehicles ORDER BY driver_name
         `);
         res.status(200).json(result.rows);
     } catch (error) {
@@ -61,7 +58,6 @@ const getDrivers = async (req, res) => {
                 
 const moveDriverToCity = async (req, res) => {
     const { driverName, newCity } = req.body;
-    console.log(`moveDriverToCity(driverName=${driverName}, newCity=${newCity})`);
     try {
         const locationQuery = await pool.query(`
             SELECT id FROM locations
@@ -80,7 +76,6 @@ const moveDriverToCity = async (req, res) => {
             SET current_location_id = ${locationIndex}
             WHERE driver_name = '${driverName}'
         `);
-        console.log("Database updated successfully");
         res.send('Database updated successfully');
     } catch (error) {
         console.error(error.message);
@@ -91,7 +86,6 @@ const moveDriverToCity = async (req, res) => {
 
 const addNewDriver = async (req, res) => {
     const { driverName, newCity } = req.body;
-    console.log(`addNewDriver(driverName=${driverName}, newCity=${newCity})`);
     try {
         const locationQuery = await pool.query(`
             SELECT id FROM locations
@@ -109,7 +103,6 @@ const addNewDriver = async (req, res) => {
             INSERT INTO vehicles (driver_name, current_location_id)
             VALUES ('${driverName}', ${locationIndex})
         `);
-        console.log(`addNewDriver result: ${result}`);
         res.send('Database updated successfully');
     } catch (error) {
         console.error(error.message);
@@ -120,13 +113,11 @@ const addNewDriver = async (req, res) => {
 
 const addNewCity = async (req, res) => {
     const {newCity, latitude, longitude } = req.body;
-    console.log(`newCity: ${newCity}, latitude: ${latitude}, longitude: ${longitude})`);
     try {
         const locationQuery = await pool.query(`
             INSERT INTO locations (name, latitude, longitude)
             VALUES ('${newCity}', ${latitude}, ${longitude})
         `);
-        console.log("Database updated successfully");
         res.send('Database updated successfully');
     } catch (error) {
         console.error(error.message);

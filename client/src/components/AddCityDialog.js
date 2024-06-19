@@ -6,7 +6,6 @@ const AddCityDialog = ({ onAddCity }) => {
     const [longitude, setLongitude] = useState('');
 
     const handleAddCity = () => {
-      console.log(`handleAddCity(newCity=${newCity}, latitude=${latitude}, longitude=${longitude})`);
       if ((newCity && latitude) && longitude) {
         onAddCity(newCity, latitude, longitude);
         setNewCity('');

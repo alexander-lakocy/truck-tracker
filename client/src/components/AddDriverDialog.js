@@ -5,8 +5,6 @@ const AddDriverDialog = ({ cities, onAddDriver }) => {
     const [selectedCity, setSelectedCity] = useState('');
 
     const handleAddDriver = () => {
-        // Pop up menu with text dialog for driver name
-        console.log(`handleAddDriver(newDriver=${newDriver}, selectedCity=${selectedCity})`);
         if (newDriver && selectedCity) {
             onAddDriver(newDriver, selectedCity);
             setDriverName('');
