@@ -15,6 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 const getVehicles = async (req, res) => {
+    console.log('getVehicles()');
     try {
         const result = await pool.query(`
             SELECT v.id, v.driver_name, l.name AS current_city, l.latitude, l.longitude
@@ -31,6 +32,7 @@ const getVehicles = async (req, res) => {
 };
         
 const getCities = async (req, res) => {
+    console.log('getCities()');
     try {
         const result = await pool.query(`
             SELECT name FROM locations
@@ -44,6 +46,7 @@ const getCities = async (req, res) => {
 };
 
 const getDrivers = async (req, res) => {
+    console.log('getDrivers()');
     try {
         const result = await pool.query(`
             SELECT driver_name FROM vehicles ORDER BY id
@@ -57,11 +60,12 @@ const getDrivers = async (req, res) => {
 };
                 
 const moveDriverToCity = async (req, res) => {
-    const { driver_name, new_city } = req.body;
+    const { driverName, newCity } = req.body;
+    console.log(`moveDriverToCity(driverName=${driverName}, newCity=${newCity})`);
     try {
         const locationQuery = await pool.query(`
             SELECT id FROM locations
-            WHERE name = '${new_city}'
+            WHERE name = '${newCity}'
         `);
         
         if (locationQuery.rows.length === 0) {
@@ -74,8 +78,9 @@ const moveDriverToCity = async (req, res) => {
         const result = await pool.query(`
             UPDATE vehicles
             SET current_location_id = ${locationIndex}
-            WHERE driver_name = '${driver_name}'
+            WHERE driver_name = '${driverName}'
         `);
+        console.log("Database updated successfully");
         res.send('Database updated successfully');
     } catch (error) {
         console.error(error.message);
@@ -85,24 +90,26 @@ const moveDriverToCity = async (req, res) => {
 };
 
 const addNewDriver = async (req, res) => {
-    const { driver_name, new_city } = req.body;
+    const { driverName, newCity } = req.body;
+    console.log(`addNewDriver(driverName=${driverName}, newCity=${newCity})`);
     try {
         const locationQuery = await pool.query(`
             SELECT id FROM locations
-            WHERE name = '${new_city}'
+            WHERE name = '${newCity}'
         `);
         
         if (locationQuery.rows.length === 0) {
-            throw new Error('Location not found');
             console.error('Location not found');
+            throw new Error('Location not found');
         }
 
         const locationIndex = locationQuery.rows[0].id;
 
         const result = await pool.query(`
             INSERT INTO vehicles (driver_name, current_location_id)
-            VALUES ('${driver_name}', ${locationIndex})
+            VALUES ('${driverName}', ${locationIndex})
         `);
+        console.log(`addNewDriver result: ${result}`);
         res.send('Database updated successfully');
     } catch (error) {
         console.error(error.message);
@@ -112,13 +119,14 @@ const addNewDriver = async (req, res) => {
 };
 
 const addNewCity = async (req, res) => {
-    const {new_city, latitude, longitude } = req.body;
-    console.log(`city_name: ${new_city}, latitude: ${latitude}, longitude: ${longitude}`);
+    const {newCity, latitude, longitude } = req.body;
+    console.log(`newCity: ${newCity}, latitude: ${latitude}, longitude: ${longitude})`);
     try {
         const locationQuery = await pool.query(`
             INSERT INTO locations (name, latitude, longitude)
-            VALUES ('${new_city}', ${latitude}, ${longitude})
+            VALUES ('${newCity}', ${latitude}, ${longitude})
         `);
+        console.log("Database updated successfully");
         res.send('Database updated successfully');
     } catch (error) {
         console.error(error.message);
@@ -136,6 +144,8 @@ app.get("/vehicles", getVehicles);
 app.get("/cities", getCities);
 
 app.get("/drivers", getDrivers);
+
+app.get("/api/vehicles", getVehicles);
 
 app.get("/api/cities", getCities);
 
