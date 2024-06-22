@@ -45,7 +45,7 @@ function App() {
 
   const addDriver = async (name, city) => {
     try {
-      await axios.post('http://localhost:9000/api/addDriver', { driverName: name, newCity: city });
+      await axios.post('http://localhost:9000/api/addDriver', { newDriver: name, cityName: city });
       fetchAll();
     } catch (error) {
       console.error('Error adding driver:', error);
@@ -63,7 +63,7 @@ function App() {
 
   const moveDriver = async (driver, city) => {
     try {
-      await axios.post('http://localhost:9000/updateDatabase', { driverName: driver, newCity: city });
+      await axios.post('http://localhost:9000/moveDriver', { driverName: driver, destination: city });
       fetchAll();
     } catch (error) {
       console.error('Error moving driver:', error);
