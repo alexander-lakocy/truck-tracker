@@ -1,0 +1,10 @@
+#DATABASE INFO
+PGDATABASE=trucks
+PGUSER=username
+PGPASSWORD=passwd
+PGHOST=localhost
+PGPORT=dbport
+PGROOT=postgresql
+
+#SERVER INFO
+PORT=serverport
