@@ -3,6 +3,8 @@
 ## Description
 A basic tool for creating, moving, and tracking company drivers and trucks.
 
+This project runs on PostgreSQL, Express, React, and Node (PERN).
+
 ## Installation
 1. Clone the repository
 2. Install `Node.js` and `PostgreSQL`
@@ -25,7 +27,9 @@ Enter the driver name and a starting city, then click `Add Driver`.
 Enter the city name and coordinates, then click `Add City`.
 
 ### Move truck
-Select the driver to move and the destination city, then click `Move`.
+Select the driver to move and the destination city, then click `Send`.
+
+![screenshot of truck-tracker web application](./doc/truck-tracker-screenshot.png)
 
 ## Contributing
 Contributions are always welcome.
